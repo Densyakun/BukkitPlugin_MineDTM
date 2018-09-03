@@ -1,0 +1,7 @@
+name: MineDTM
+main: io.github.densyakun.bukkit.minedtm.Main
+version: 1.0
+author: Densyakun
+website: http://densyakun.github.io/
+commands:
+   dtm:
