@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 public class MusicPlayer implements Runnable {
@@ -158,6 +159,9 @@ public class MusicPlayer implements Runnable {
 			while (tracks.hasNext()) {
 
 				Track track = tracks.next();
+				Sound sound = track.sound;
+				if (sound == null)
+					sound = Track.DEFAULT_SOUND;
 				Iterator<Note> notes = track.notes.iterator();
 				while (notes.hasNext()) {
 
@@ -174,11 +178,11 @@ public class MusicPlayer implements Runnable {
 						if (0 < listeners.size()) {
 							for (int b = 0; b < listeners.size(); b++) {
 								Player listener = listeners.get(b);
-								listener.playSound(location == null ? listener.getLocation() : location, track.sound,
+								listener.playSound(location == null ? listener.getLocation() : location, sound,
 										volume * track.volume * note.volume, notepitch);
 							}
 						} else if (location != null)
-							location.getWorld().playSound(location, track.sound, volume * track.volume * note.volume,
+							location.getWorld().playSound(location, sound, volume * track.volume * note.volume,
 									notepitch);
 					}
 				}

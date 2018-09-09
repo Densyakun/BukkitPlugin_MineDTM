@@ -17,7 +17,7 @@ public class Track implements Serializable {
 	public static Sound DEFAULT_SOUND;
 
 	static {
-		if ((DEFAULT_SOUND = Sound.valueOf("BLOCK_NOTE_HARP")) != null)
+		if ((DEFAULT_SOUND = Sound.valueOf("BLOCK_NOTE_HARP")) == null)
 			DEFAULT_SOUND = Sound.valueOf("NOTE_PIANO");
 	}
 
