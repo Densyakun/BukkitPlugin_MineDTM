@@ -2,6 +2,7 @@ package io.github.densyakun.bukkit.minedtm;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -11,6 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import javax.sound.midi.InvalidMidiDataException;
 
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -55,7 +58,7 @@ public class Main extends JavaPlugin implements Listener {
 					if (args.length == 1) {
 						sender.sendMessage(msg_prefix + ChatColor.GOLD + param_is_not_enough);
 						sender.sendMessage(ChatColor.GREEN
-								+ "/dtm song (new|edit|e|copy|delete|del|info|i|list|l|name|tempo|copyable|track|t|note|n|play|p)");
+								+ "/dtm song (new|edit|e|copy|delete|del|info|i|list|l|name|tempo|copyable|track|t|note|n|play|p|import|export)");
 					} else if (args[1].equalsIgnoreCase("new")) {
 						if (args.length == 2) {
 							sender.sendMessage(msg_prefix + ChatColor.GOLD + param_is_not_enough);
@@ -324,8 +327,8 @@ public class Main extends JavaPlugin implements Listener {
 											try {
 												float a = Float.parseFloat(args[3]);
 												track.setPitch(a);
-												sender.sendMessage(msg_prefix + ChatColor.AQUA + "ピッチを変更しました: "
-														+ track.pitch * 12);
+												sender.sendMessage(
+														msg_prefix + ChatColor.AQUA + "ピッチを変更しました: " + track.pitch);
 											} catch (NumberFormatException e) {
 												sender.sendMessage(msg_prefix + ChatColor.RED + "正しくピッチ(数値)を指定して下さい");
 											}
@@ -460,10 +463,33 @@ public class Main extends JavaPlugin implements Listener {
 								sender.sendMessage(ChatColor.GOLD + song.name + ChatColor.AQUA + "を再生中");
 							}
 						}
+					} else if (args[1].equalsIgnoreCase("import")) {
+						if (args.length == 2) {
+							sender.sendMessage(msg_prefix + ChatColor.GOLD + param_is_not_enough);
+							sender.sendMessage(ChatColor.GREEN + "/dtm song import (name)");
+						} else {
+							try {
+								Song song = MidiFileManager.importSong(this, args[2], (Player) sender);
+								sd.setSong(song);
+								sender.sendMessage(msg_prefix + ChatColor.AQUA + "曲「" + ChatColor.GOLD + song.name
+										+ ChatColor.AQUA + "」をインポートしました");
+								edit((Player) sender, song);
+							} catch (FileNotFoundException e) {
+								sender.sendMessage(msg_prefix + ChatColor.RED + "Midiファイルが見つかりませんでした");
+							} catch (InvalidMidiDataException e) {
+								e.printStackTrace();
+								sender.sendMessage(msg_prefix + ChatColor.RED + "Midiファイルが対応していません");
+							} catch (IOException e) {
+								e.printStackTrace();
+								sender.sendMessage(msg_prefix + ChatColor.RED + e.getMessage());
+							}
+						}
+					} else if (args[1].equalsIgnoreCase("export")) {
+						// TODO
 					} else {
 						sender.sendMessage(msg_prefix + ChatColor.GOLD + param_wrong_cmd);
 						sender.sendMessage(ChatColor.GREEN
-								+ "/dtm song (new|edit|e|copy|delete|del|info|i|list|l|name|tempo|copyable|track|t|note|n|play|p)");
+								+ "/dtm song (new|edit|e|copy|delete|del|info|i|list|l|name|tempo|copyable|track|t|note|n|play|p|import|export)");
 					}
 				} else {
 					sender.sendMessage(msg_prefix + ChatColor.GOLD + param_wrong_cmd);

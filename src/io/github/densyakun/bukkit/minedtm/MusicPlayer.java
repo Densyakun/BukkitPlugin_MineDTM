@@ -174,7 +174,7 @@ public class MusicPlayer implements Runnable {
 						a = true;
 
 					if (a) {
-						float notepitch = 0.5f + (pitch + track.pitch + note.pitch / 16f);
+						float notepitch = 0.7f + (pitch + track.pitch + note.pitch) / 15.5f;
 						if (0 < listeners.size()) {
 							for (int b = 0; b < listeners.size(); b++) {
 								Player listener = listeners.get(b);
